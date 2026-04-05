@@ -78,7 +78,7 @@ class Question(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=100)
     price = models.IntegerField()
-    quantity = models.IntegerField(default='zero')
+    quantity = models.IntegerField()
 
     def total_price(self):
         return self.price * self.qty

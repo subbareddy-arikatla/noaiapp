@@ -19,8 +19,9 @@ def student_list(request, *args, **kwargs):
     elif request.method=='GET':
         students=Student.objects.all()
         serializer=StudentSerializer(students,many=True)
-        return Response(serializer.data,)
-
+        return Response(serializer.data)
+    
+@api_view(['GET','PUT','DELETE'])
 def student_details(request,pk, *args, **kwargs):
     try:
         student=Student.objects.get(pk=pk)
@@ -28,31 +29,32 @@ def student_details(request,pk, *args, **kwargs):
         return Response(status=404)
     if request.method=='GET':
         serializer=StudentSerializer(student)
-        return Response(serializer.data)
+        return Response(serializer.data, many=True)
     elif request.method=='DELETE':
         student.delete()
         return Response(status=204)
     elif request.method=='PUT':
-        data=JSONParser().parser(request)
+        data=JSONParser().parse(request)
         serializer=StudentSerializer(student,data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.error)
+        return Response(serializer.errors)
     
 @api_view(['POST','GET'])
 def QuestionList(request):
     if request.method=='GET':
         questions=Question.objects.all()
-        serializer=QuestionSerializer(questions)
+        serializer=QuestionSerializer(questions, many=True)
         return Response(serializer.data,status=200)
     elif request.method=='POST':
-        data=JSONParser().parser(request)
-        serializer=QuestionSerializer(data)
+        data=JSONParser().parse(request)
+        serializer=QuestionSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors,status=404)
+@api_view(['GET','PUT','DELETE'])
 def QuestionDetails(request,pk):
     try:
         question=Question.objects.get(pk=pk)
@@ -62,7 +64,7 @@ def QuestionDetails(request,pk):
         serializer=QuestionSerializer(question)
         return Response(serializer.data)
     elif request.method=='PUT':
-        data=JSONParser.Parser(request)
+        data=JSONParser().parse(request)
         serializer=QuestionSerializer(question,data=data)
         if serializer.is_valid():
             serializer.save()
@@ -75,7 +77,7 @@ def QuestionDetails(request,pk):
 @api_view(['GET'])
 def get_products(request):
     products = Product.objects.all()
-    serializer = ProductSerializer(products)
+    serializer = ProductSerializer(products,many=True)
     return Response(serializer.data)
 
 @api_view(['POST'])
@@ -88,7 +90,7 @@ def create_product(request):
 
 @api_view(['GET'])
 def crash_api(request):
-    x = 10 / 0
+    x = 10 / 1
     return Response({"msg": "crash"})
 
 @api_view(['PUT'])

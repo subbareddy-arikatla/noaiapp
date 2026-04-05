@@ -99,9 +99,18 @@ class StudentSerializer(serializers.Serializer):
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model=Question
-        fields='__all__'
+        fields=['id','question_name','question_type','question_category','option_a','option_b','option_c','option_d','correct_ans']
+        read_only_fields = ['id']
+
     def validate(self,data):
-        if data['correct_ans'] == data['option_a'] or data['correct_ans'] == data['option_b'] or data['correct_ans'] == data['option_c'] or data['correct_ans'] == data['option_d']:
+        correct_ans=data['correct_ans']
+        options = [
+            data.get('option_a'),
+            data.get('option_b'),
+            data.get('option_c'),
+            data.get('option_d')
+            ]
+        if correct_ans not in options:
             raise serializers.ValidationError('correct answer must be above option a,b,c,d')
         return data
     def create(self,validated_data):
@@ -121,7 +130,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ['name','price','quantity']
 
     def validate_price(self, value):
         if value < 0:
