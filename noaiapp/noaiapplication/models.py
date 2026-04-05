@@ -74,3 +74,11 @@ class Question(models.Model):
     option_c=models.CharField(max_length=255)
     option_d=models.CharField(max_length=255)
     correct_ans=models.CharField(max_length=255)
+
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.IntegerField()
+    quantity = models.IntegerField(default='zero')
+
+    def total_price(self):
+        return self.price * self.qty

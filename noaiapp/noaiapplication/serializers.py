@@ -72,18 +72,18 @@
 #             return instance
 
 from rest_framework import serializers
-from models import Student,Question
+from .models import Student,Question,Product
 
 class StudentSerializer(serializers.Serializer):
     name=serializers.CharField(max_length=255)
     age=serializers.IntegerField()
     phonenumber=serializers.CharField(max_length=20)
     def validate_name(self,value):
-        if value != value.title():
+        if value != value.lower():
             raise serializers.ValidationError('name must be lowercase only')
         return value
     def validate_age(self,value):
-        if value<18 and value>100:
+        if not (18 <= value <= 100):
             raise serializers.ValidationError('age must be between the 18 to 100')
         return value
 
@@ -117,3 +117,13 @@ class QuestionSerializer(serializers.ModelSerializer):
         instance.correct_ans=validated_data.get('correct_ans',instance.correct_ans)
         instance.save()
         return instance
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+    def validate_price(self, value):
+        if value < 0:
+            raise Exception("Invalid price")
+        return value

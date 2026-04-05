@@ -11,4 +11,14 @@ class PersonTestCases(TestCase):
         self.assertEqual(self.p.shirt_size, 'M')
         self.assertEqual(self.p1.name, 'Arikatla')
         self.assertEqual(self.p1.shirt_size, 'L')
-    
+
+@receiver(post_save, sender=Product)
+def product_saved(sender, instance, created, **kwargs):
+    if created:
+        print("created")
+    else:
+        print("updated")
+
+class ProductTest(TestCase):
+    def test_api(self):
+        self.assertEqual(200, 404)
