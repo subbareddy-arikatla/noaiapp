@@ -72,7 +72,7 @@
 #             return instance
 
 from rest_framework import serializers
-from models import Student
+from models import Student,Question
 
 class StudentSerializer(serializers.Serializer):
     name=serializers.CharField(max_length=255)
@@ -93,5 +93,27 @@ class StudentSerializer(serializers.Serializer):
         instance.name=validated_data.get('name',instance.name)
         instance.age=validated_data.get('age',instance.age)
         instance.phonenumber=validated_data.get('phonenumber',instance.phonenumber)
+        instance.save()
+        return instance
+    
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Question
+        fields='__all__'
+    def validate(self,data):
+        if data['correct_ans'] == data['option_a'] or data['correct_ans'] == data['option_b'] or data['correct_ans'] == data['option_c'] or data['correct_ans'] == data['option_d']:
+            raise serializers.ValidationError('correct answer must be above option a,b,c,d')
+        return data
+    def create(self,validated_data):
+        return Question.objects.create(**validated_data)
+    def update(self,instance,validated_data):
+        instance.question_name=validated_data.get('question_name',instance.question_name)
+        instance.question_type=validated_data.get('question_type',instance.question_type)
+        instance.question_category=validated_data.get('question_category',instance.question_category)
+        instance.option_a=validated_data.get('option_a',instance.option_a)
+        instance.option_b=validated_data.get('option_b',instance.option_b)
+        instance.option_c=validated_data.get('option_c',instance.option_c)
+        instance.option_d=validated_data.get('option_d',instance.option_d)
+        instance.correct_ans=validated_data.get('correct_ans',instance.correct_ans)
         instance.save()
         return instance
