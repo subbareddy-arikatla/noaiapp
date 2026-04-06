@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.core.validators import MaxValueValidator,MinValueValidator
 # Create your models here.
 class Student(models.Model):
@@ -24,29 +25,20 @@ class Person(models.Model):
         'L':'Large',
     }
     name=models.CharField(max_length=60)
-    shirt_size=models.CharField(max_length=1,choices=SHIRT_SIZES)
+    shirt_size=models.CharField(max_length=1,choices=SHIRT_SIZES ,default='S')
 class Runner(models.Model):
     medalType=models.TextChoices('medalType','GOLD SLIVER BRONZE')
     name=models.CharField(max_length=60)
     medal=models.CharField(blank=True, choices=medalType, max_length=10)
 class Apple(models.Model):
     name=models.CharField(max_length=45,primary_key=True)
-
-
-# poll=models.ForeignKey(Poll,on_delete=models.CASCADE,verbose_name='the related poll')
-# sites=models.ManyToManyField(Site,verbose_name='list of sites')
-# place=models.OneToOneField(
-#     place,
-#     on_delete=models.CASCADE,
-#     verbose_name='related place',
-# )
 class Manufacture(models.Model):
     #...
     pass
 class Car(models.Model):
     manufacturer=models.ForeignKey(Manufacture,on_delete=models.CASCADE)
 
-class Person(models.Model):
+class Persondemo(models.Model):
     name=models.CharField(max_length=128)
     def __str__(self):
         return self.name
@@ -82,3 +74,24 @@ class Product(models.Model):
 
     def total_price(self):
         return self.price * self.qty
+   
+class Customer(models.Model):
+    name=models.CharField(max_length=255)
+    phonenumber=models.CharField(max_length=20)
+    address=models.CharField(max_length=255)
+
+class ProductDemo(models.Model):
+    name=models.CharField(max_length=255)
+    description=models.TextField()
+    image=models.ImageField()
+    price=models.IntegerField()
+    category=models.CharField(max_length=255)
+    quantity=models.IntegerField()
+    created_at=models.DateTimeField(default=timezone.now)
+
+class Order(models.Model):
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
+    product=models.ManyToManyField(ProductDemo)
+    bill=models.IntegerField()
+    address=models.CharField(max_length=255)
+    created_at=models.DateTimeField()

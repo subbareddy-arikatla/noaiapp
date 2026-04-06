@@ -1,10 +1,10 @@
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
-from .serializers import StudentSerializer,QuestionSerializer,ProductSerializer
-from .models import Student,Question,Product
-from rest_framework.parsers import JSONParser
+from rest_framework.decorators import api_view,parser_classes
+from .serializers import StudentSerializer,QuestionSerializer,ProductSerializer,ProductdemoSerializer,CustomerSerializer
+from .models import Student,Question,Product,ProductDemo,Customer
+from rest_framework.parsers import JSONParser, MultiPartParser, FileUploadParser
 
 @api_view(['GET','POST',])
 def student_list(request, *args, **kwargs):
@@ -100,3 +100,88 @@ def update_product(request, id):
     if serializer.is_valid():
         serializer.save()
     return Response(serializer.data)
+
+@api_view(['GET','POST'])
+@parser_classes([MultiPartParser, FileUploadParser])
+def productdemoList(request):
+    if request.method=='GET':
+        productsdemolist=ProductDemo.objects.all()
+        serializer=ProductdemoSerializer(productsdemolist,many=True)
+        return Response(serializer.data,status=201)
+    if request.method=='POST':
+        serializer=ProductdemoSerializer(data=request.data)
+        if serializer.is_valid():
+            print(serializer.validated_data)
+            serializer.save()
+            return Response(serializer.data)
+        print(serializer.errors)
+        return Response(serializer.errors)
+    
+@api_view(['GET','DELETE','PUT'])
+@parser_classes([MultiPartParser, FileUploadParser])
+def productdemoDetails(request,id,*args,**kwargs):
+    print(request.data)
+    print(id)
+    try:
+        productdemo=ProductDemo.objects.get(pk=id)
+        print(productdemo)
+    except ProductDemo.DoesNotExist:
+        return Response(status=404) 
+    if request.method=='GET':
+        serializer=ProductdemoSerializer(productdemo)
+        return Response(serializer.data)
+    elif request.method=='POST':
+        serializer=ProductdemoSerializer(productdemo,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+    elif request.method=='DELETE':
+        productdemo.delete()
+        return Response(status=204)
+
+@api_view(['GET','POST'])
+def Customerlist(request):
+    if request.method=='POST':
+        serializer=CustomerSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.error)
+    elif request.method=='GET':
+        query_set=Customer.objects.all()
+        name=request.query_params.get('name')
+        if name is not None:
+            query_set=query_set.filter(name=name)
+        
+        phonenumber=request.query_params.get("phonenumber")
+        if phonenumber is not None:
+             query_set=query_set.filter(phonenumber=phonenumber)
+
+        address=request.query_params.get('address')
+        if address is not None:
+            query_set=query_set.filter(address=address)
+        serializer=CustomerSerializer(query_set,many=True)
+        return Response(serializer.data,status=200)
+    
+@api_view(['GET','PUT','DELETE'])
+def CustomerDetails(request,pk):
+    try:
+        customer=Customer.objects.get(pk=pk)
+    except Customer.DoesNotExist:
+        return Response(status=404)
+    if request.method=='GET':
+        serializer=CustomerSerializer(customer)
+        return Response(serializer.data,status=200)
+    elif request.method=='PUT':
+        serializer=CustomerSerializer(customer, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=201)
+        return Response(serializer.errors,status=404)
+    elif request.method=='DELETE':
+        customer.delete()
+        return Response(status=205)
+
+
+        

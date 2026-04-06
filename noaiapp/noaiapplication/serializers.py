@@ -72,7 +72,7 @@
 #             return instance
 
 from rest_framework import serializers
-from .models import Student,Question,Product
+from .models import Student,Question,Product,Order,Customer,ProductDemo
 
 class StudentSerializer(serializers.Serializer):
     name=serializers.CharField(max_length=255)
@@ -136,3 +136,42 @@ class ProductSerializer(serializers.ModelSerializer):
         if value < 0:
             raise Exception("Invalid price")
         return value
+class ProductdemoSerializer(serializers.Serializer):
+    id=serializers.HiddenField(default=serializers.CurrentUserDefault())
+    name=serializers.CharField(max_length=255)
+    description=serializers.CharField(
+        required=False,
+        allow_blank=True,
+        max_length=255
+        )
+    image=serializers.ImageField()
+    price=serializers.IntegerField()
+    category=serializers.CharField()
+    quantity=serializers.IntegerField()
+    def create(self,validated_data):
+        return ProductDemo.objects.create(**validated_data)
+    def update(self,instance,validated_data):
+        instance.name=validated_data.get('name',instance.name)
+        instance.description=validated_data.get('description',instance.data)
+        instance.image=validated_data.get('image',instance.image)
+        instance.price=validated_data.get('price',instance.price)
+        instance.category=validated_data.get('category',instance.category)
+        instance.quantity=validated_data.get(' quantity',instance.quantity)
+        instance.created_at=validated_data.get('created_at',instance.created_at)
+        instance.save()
+        return instance
+class OrderSerializer(serializers.ModelSerializer):
+    # If these are reverse relationships or ManyToMany, ensure 'many=True' is correct
+    product = ProductdemoSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Order
+        fields = ['id', 'product', 'customer', 'bill', 'address', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
+class CustomerSerializer(serializers.ModelSerializer):
+    order = OrderSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Customer
+        fields = ["name", "phonenumber","address","order"]
