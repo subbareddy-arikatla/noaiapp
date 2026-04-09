@@ -80,23 +80,29 @@ from datetime import date
 
 from rest_framework import serializers
 from .models import Book
+from rest_framework import serializers
+from .models import Book
+import datetime
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = '__all__'
 
-    def validate_genre(self, value):
-        valid_genres = [choice[0] for choice in Book.GENRE_CHOICES]
-        if value not in valid_genres:
-            raise serializers.ValidationError("Invalid genre selected.")
+    def validate_publication_year(self, value):
+        current_year = datetime.datetime.now().year
+        if value > current_year:
+            raise serializers.ValidationError("Publication year cannot be in the future.")
+        if value < 1000:
+            raise serializers.ValidationError("Enter a valid publication year.")
         return value
 
-    def validate_publication_date(self, value):
-        if value > date.today():
-            raise serializers.ValidationError("Publication date cannot be in the future")
+    def validate_isbn(self, value):
+        if not value.isdigit():
+            raise serializers.ValidationError("ISBN must contain only digits.")
+        if len(value) not in [10, 13]:
+            raise serializers.ValidationError("ISBN must be 10 or 13 digits long.")
         return value
-    
 class StudentSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name=serializers.CharField(max_length=255)
