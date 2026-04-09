@@ -76,17 +76,18 @@ from .models import Student,Question,Product,Order,Customer,ProductDemo,Book
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
-        model=Book
-        fields=['id','title','author','publication_date','genre']
+        model = Book
+        fields = '__all__'
+
     def validate_title(self, value):
         if not value.strip():
             raise serializers.ValidationError("Title cannot be empty")
         return value
 
-    def validate(self, data):
-        if data['publication_date'] > serializers.DateField().to_internal_value('2100-01-01'):
-            raise serializers.ValidationError("Invalid publication date")
-        return data
+    def validate_publication_date(self, value):
+        if value > date.today():
+            raise serializers.ValidationError("Publication date cannot be in the future")
+        return value
     
 class StudentSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)

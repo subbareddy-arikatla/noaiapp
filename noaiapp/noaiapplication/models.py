@@ -3,10 +3,10 @@ from django.utils import timezone
 from django.core.validators import MaxValueValidator,MinValueValidator
 # Create your models here.
 class Book(models.Model):
-    id=models.IntegerField(default=0)
+    id = models.AutoField(primary_key=True)
     title=models.CharField(max_length=255)
     author=models.CharField(max_length=255)
-    publication_date=models.DateTimeField(max_length=255)
+    publication_date=models.DateTimeField()
     genre=models.CharField(max_length=250)
 
 class Student(models.Model):
