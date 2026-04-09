@@ -77,7 +77,7 @@ from .models import Student,Question,Product,Order,Customer,ProductDemo,Book
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model=Book
-        fields='__all__'
+        fields=['id','title','author','public_date','genere']
 class StudentSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name=serializers.CharField(max_length=255)

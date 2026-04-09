@@ -2,9 +2,43 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view,parser_classes
-from .serializers import StudentSerializer,QuestionSerializer,ProductSerializer,ProductdemoSerializer,CustomerSerializer
-from .models import Student,Question,Product,ProductDemo,Customer
+from .serializers import StudentSerializer,QuestionSerializer,ProductSerializer,ProductdemoSerializer,CustomerSerializer,BookSerializer
+from .models import Student,Question,Product,ProductDemo,Customer,Book
 from rest_framework.parsers import JSONParser, MultiPartParser, FileUploadParser
+
+@api_view(['GET','POST'])
+def book_list(request):
+    if request.method=='GET':
+        books=Book.objects.all()
+        serializer=BookSerializer(books,many=True)
+        return Response(serializer.data,status=200)
+    if request.method=='POST':
+        serializer=BookSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=201)
+        return Response(serializer.data)
+@api_view(['GET','PUT','DELETE'])
+def book_details(request,pk):
+    try:
+        book=Book.objects.get(pk=pk)
+    except Book.DoesNotExist:
+        return Response(status=404)
+    if request.method=='GET':
+        serializer=BookSerializer(book)
+        return Response(serializer.data,status=201)
+    if request.method=='PUT':
+        serializer=BookSerializer(isinstance,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.error)
+    if request.method=='DELETE':
+        book.delete()
+        return Response(status=204)
+
+
+
 
 @api_view(['GET','POST',])
 def student_list(request, *args, **kwargs):

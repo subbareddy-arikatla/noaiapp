@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.core.validators import MaxValueValidator,MinValueValidator
 # Create your models here.
 class Book(models.Model):
+    id=models.IntegerField(default=0)
     title=models.CharField(max_length=255)
     author=models.CharField(max_length=255)
     public_date=models.DateTimeField(max_length=255)
