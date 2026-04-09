@@ -78,6 +78,16 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model=Book
         fields=['id','title','author','public_date','genere']
+    def validate_title(self, value):
+        if not value.strip():
+            raise serializers.ValidationError("Title cannot be empty")
+        return value
+
+    def validate(self, data):
+        if data['publication_date'] > serializers.DateField().to_internal_value('2100-01-01'):
+            raise serializers.ValidationError("Invalid publication date")
+        return data
+    
 class StudentSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name=serializers.CharField(max_length=255)

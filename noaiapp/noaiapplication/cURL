@@ -1,0 +1,27 @@
+curl -X GET http://127.0.0.1:8000/books/
+
+
+curl -X POST http://127.0.0.1:8000/books/ \
+-H "Content-Type: application/json" \
+-d '{
+    "title": "Django Basics",
+    "author": "John Doe",
+    "publication_date": "2023-01-01",
+    "genre": "Education"
+}'
+
+
+curl -X GET http://127.0.0.1:8000/books/1/
+
+
+curl -X PUT http://127.0.0.1:8000/books/1/ \
+-H "Content-Type: application/json" \
+-d '{
+    "title": "Advanced Django",
+    "author": "John Doe",
+    "publication_date": "2023-05-01",
+    "genre": "Programming"
+}'
+
+
+curl -X DELETE http://127.0.0.1:8000/books/1/
