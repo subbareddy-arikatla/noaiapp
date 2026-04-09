@@ -40,7 +40,28 @@ def student_details(request,pk, *args, **kwargs):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
-    
+@api_view(['POST'])
+def bulkStudentCreate(request):
+    if request.method=='POST':
+        students=request.data
+        print(students)
+        results ={'success':[],'errors':[]}
+        if len(students)==0:
+            return Response({'error':'empty student'},status=400)
+        if not isinstance(students,list):
+            return Response({'error':'must be array only'},status=400)
+        for student_data in students:
+            serializer=StudentSerializer(data=student_data)
+            if serializer.is_valid():
+                serializer.save()
+                results ['success'].append(serializer.data)
+            else:
+                results['errors'].append({
+                    'data':student_data,
+                    'errors':serializer.errors
+                })
+        return Response(results,status=201)
+
 @api_view(['POST','GET'])
 def QuestionList(request):
     if request.method=='GET':

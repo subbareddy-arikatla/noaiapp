@@ -72,9 +72,14 @@
 #             return instance
 
 from rest_framework import serializers
-from .models import Student,Question,Product,Order,Customer,ProductDemo
+from .models import Student,Question,Product,Order,Customer,ProductDemo,Book
 
+class BookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Book
+        fields='__all__'
 class StudentSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
     name=serializers.CharField(max_length=255)
     age=serializers.IntegerField()
     phonenumber=serializers.CharField(max_length=20)
@@ -137,7 +142,7 @@ class ProductSerializer(serializers.ModelSerializer):
             raise Exception("Invalid price")
         return value
 class ProductdemoSerializer(serializers.Serializer):
-    id=serializers.HiddenField(default=serializers.CurrentUserDefault())
+    id = serializers.IntegerField(read_only=True)
     name=serializers.CharField(max_length=255)
     description=serializers.CharField(
         required=False,
