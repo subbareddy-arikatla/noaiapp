@@ -78,21 +78,18 @@ from rest_framework import serializers
 from .models import Book
 from datetime import date
 
-class BookSerializer(serializers.ModelSerializer):
+from rest_framework import serializers
+from .models import Book
 
+class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = '__all__'
 
-    def validate_author(self, value):
-        if not value.strip():
-            raise serializers.ValidationError("Author name cannot be empty")
-        return value
-
     def validate_genre(self, value):
         valid_genres = [choice[0] for choice in Book.GENRE_CHOICES]
         if value not in valid_genres:
-            raise serializers.ValidationError("Invalid genre selected")
+            raise serializers.ValidationError("Invalid genre selected.")
         return value
 
     def validate_publication_date(self, value):

@@ -2,20 +2,20 @@ from django.db import models
 from django.utils import timezone
 from django.core.validators import MaxValueValidator,MinValueValidator
 # Create your models here.
-class Book(models.Model):
+from django.db import models
 
+class Book(models.Model):
     GENRE_CHOICES = [
         ('Fiction', 'Fiction'),
         ('Non-Fiction', 'Non-Fiction'),
-        ('Education', 'Education'),
-        ('Programming', 'Programming'),
-        ('Other', 'Other'),
+        ('Science', 'Science'),
+        ('History', 'History'),
     ]
 
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
-    publication_date = models.DateField()  # ✅ fixed
-    genre = models.CharField(max_length=100, choices=GENRE_CHOICES)
+    publication_date = models.DateField()
+    genre = models.CharField(max_length=50, choices=GENRE_CHOICES)
 
     def __str__(self):
         return self.title

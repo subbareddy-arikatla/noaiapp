@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import student_details,book_details,book_list,student_list,QuestionDetails,QuestionList,productdemoList,CustomerDetails,Customerlist,bulkStudentCreate
+from .views import student_details,student_list,BookListCreateView,BookDetailView,QuestionDetails,QuestionList,productdemoList,CustomerDetails,Customerlist,bulkStudentCreate
 from . import views
 
 urlpatterns=[
-    path('books/', views.book_list_create, name='book-list-create'),
-    path('books/<int:pk>/', views.book_detail, name='book-detail'),
+    path('books/', BookListCreateView.as_view(), name='book-list-create'),
+    path('books/<int:pk>/', BookDetailView.as_view(), name='book-detail'),
     path('students/',views.student_list,name='student-list'),
     path('students/<int:pk>/',views.student_details,name='student-list'),
     path('blukstudents/',views.bulkStudentCreate, name='bulk student create'),
