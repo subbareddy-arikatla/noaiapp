@@ -6,8 +6,8 @@ class Book(models.Model):
     id=models.IntegerField(default=0)
     title=models.CharField(max_length=255)
     author=models.CharField(max_length=255)
-    public_date=models.DateTimeField(max_length=255)
-    genere=models.CharField(max_length=250)
+    publication_date=models.DateTimeField(max_length=255)
+    genre=models.CharField(max_length=250)
 
 class Student(models.Model):
     name=models.CharField(max_length=255)

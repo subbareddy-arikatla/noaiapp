@@ -77,7 +77,7 @@ from .models import Student,Question,Product,Order,Customer,ProductDemo,Book
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model=Book
-        fields=['id','title','author','public_date','genere']
+        fields=['id','title','author','publication_date','genre']
     def validate_title(self, value):
         if not value.strip():
             raise serializers.ValidationError("Title cannot be empty")
