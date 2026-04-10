@@ -1,8 +1,23 @@
 from django.urls import path
-from .views import student_details,student_list,book_list_create,book_detail,QuestionDetails,QuestionList,productdemoList,CustomerDetails,Customerlist,bulkStudentCreate
+from .views import (student_details,
+student_list,
+book_list_create,
+book_detail,
+QuestionDetails,
+QuestionList,
+productdemoList,
+CustomerDetails,
+Customerlist,
+bulkStudentCreate,
+StudentListCreateView,
+StudentRetrieveUpdateDeleteView,
+ProfessionalListCreateView,
+ProfessionalRetrieveUpdateDeleteView,
+)
 from . import views
 
 urlpatterns=[
+
      path('books/', book_list_create, name='book_list_create'),
     path('books/<int:id>/', book_detail, name='book_detail'),
     path('students/',views.student_list,name='student-list'),
@@ -17,6 +32,11 @@ urlpatterns=[
     path('productsdemo/',views.productdemoList,name='productdemolist'),
     path('productsdemo/<int:id>/',views.productdemoDetails,name='productdemodetails'),
     path('customer/',views.Customerlist,name='customerlist'),
-    path('customer/<int:pk>/',views.CustomerDetails,name='customerlist')
+    path('customer/<int:pk>/',views.CustomerDetails,name='customerlist'),
+    path('students/', StudentListCreateView.as_view(), name='student-list-create'),
+    path('students/<int:pk>/', StudentRetrieveUpdateDeleteView.as_view(), name='student-detail'),
+
+    path('professionals/', ProfessionalListCreateView.as_view(), name='professional-list-create'),
+    path('professionals/<int:pk>/', ProfessionalRetrieveUpdateDeleteView.as_view(), name='professional-detail'),
    
 ]

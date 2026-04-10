@@ -73,16 +73,21 @@
 
 from rest_framework import serializers
 from .models import Student,Question,Product,Order,Customer,ProductDemo,Book
+from rest_framework import serializers
+from .models import Student, Professional
 
-from rest_framework import serializers
-from .models import Book
-from datetime import date
 
-from rest_framework import serializers
-from .models import Book
-from rest_framework import serializers
-from .models import Book
-import datetime
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['id', 'name', 'email', 'grade', 'age']
+
+
+class ProfessionalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Professional
+        fields = ['id', 'name', 'email', 'role', 'company']
+
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:

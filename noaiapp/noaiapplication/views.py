@@ -17,6 +17,31 @@ from rest_framework import status
 from .models import Book
 from .serializers import BookSerializer
 
+
+from rest_framework import generics
+from .models import Student, Professional
+from .serializers import StudentSerializer, ProfessionalSerializer
+
+
+class StudentListCreateView(generics.ListCreateAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+
+class StudentRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+
+class ProfessionalListCreateView(generics.ListCreateAPIView):
+    queryset = Professional.objects.all()
+    serializer_class = ProfessionalSerializer
+
+
+class ProfessionalRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Professional.objects.all()
+    serializer_class = ProfessionalSerializer
+
 @api_view(['GET', 'POST'])
 def book_list_create(request):
     if request.method == 'GET':
