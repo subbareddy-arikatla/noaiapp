@@ -18,4 +18,5 @@ urlpatterns=[
     path('productsdemo/<int:id>/',views.productdemoDetails,name='productdemodetails'),
     path('customer/',views.Customerlist,name='customerlist'),
     path('customer/<int:pk>/',views.CustomerDetails,name='customerlist')
+   
 ]
