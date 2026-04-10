@@ -17,50 +17,48 @@ from rest_framework import status
 from .models import Book
 from .serializers import BookSerializer
 
-# Create + List
-class BookListCreateView(generics.ListCreateAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
+@api_view(['GET', 'POST'])
+def book_list_create(request):
+    if request.method == 'GET':
+        books = Book.objects.all()
+        serializer = BookSerializer(books, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+    if request.method == 'POST':
+        serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({
-                "message": "Book created successfully",
-                "data": serializer.data
-            }, status=status.HTTP_201_CREATED)
-        return Response({
-            "errors": serializer.errors
-        }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Retrieve + Update + Delete
-class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
+@api_view(['GET', 'PUT', 'DELETE'])
+def book_detail(request, id):
+    try:
+        book = Book.objects.get(id=id)
+    except Book.DoesNotExist:
+        return Response(
+            {"error": "Book not found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
 
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+    if request.method == 'GET':
+        serializer = BookSerializer(book)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
+    if request.method == 'PUT':
+        serializer = BookSerializer(book, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({
-                "message": "Book updated successfully",
-                "data": serializer.data
-            })
-        return Response({
-            "errors": serializer.errors
-        }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.delete()
-        return Response({
-            "message": "Book deleted successfully"
-        }, status=status.HTTP_204_NO_CONTENT)
+    if request.method == 'DELETE':
+        book.delete()
+        return Response(
+            {"message": "Book deleted successfully."},
+            status=status.HTTP_204_NO_CONTENT
+        )
         
 @api_view(['GET','POST',])
 def student_list(request, *args, **kwargs):

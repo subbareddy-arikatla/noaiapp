@@ -87,22 +87,24 @@ import datetime
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields = '__all__'
+        fields = ['id', 'title', 'author', 'publication_date', 'genre']
+        read_only_fields = ['id']
 
-    def validate_publication_year(self, value):
-        current_year = datetime.datetime.now().year
-        if value > current_year:
-            raise serializers.ValidationError("Publication year cannot be in the future.")
-        if value < 1000:
-            raise serializers.ValidationError("Enter a valid publication year.")
+    def validate_title(self, value):
+        if not value.strip():
+            raise serializers.ValidationError("Title cannot be empty.")
         return value
 
-    def validate_isbn(self, value):
-        if not value.isdigit():
-            raise serializers.ValidationError("ISBN must contain only digits.")
-        if len(value) not in [10, 13]:
-            raise serializers.ValidationError("ISBN must be 10 or 13 digits long.")
+    def validate_author(self, value):
+        if not value.strip():
+            raise serializers.ValidationError("Author cannot be empty.")
         return value
+
+    def validate_genre(self, value):
+        if not value.strip():
+            raise serializers.ValidationError("Genre cannot be empty.")
+        return value
+    
 class StudentSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name=serializers.CharField(max_length=255)
